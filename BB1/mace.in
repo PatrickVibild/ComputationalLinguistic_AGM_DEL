@@ -1,0 +1,11 @@
+set(auto).
+
+clear(print_proofs).
+
+set(prolog_style_variables).
+
+formula_list(usable).
+
+love(mia,vincent).
+
+end_of_list.

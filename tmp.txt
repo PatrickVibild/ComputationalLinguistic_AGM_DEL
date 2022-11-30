@@ -1,0 +1,3 @@
+[
+    [not(woman(P)),not(woman(U)),not(know(fun(5),P)),know(U,fun(6,U))],[man(fun(6,U)),not(woman(P)),not(woman(U)),not(know(fun(5),P))],[man(fun(5)),not(woman(U)),know(U,fun(6,U))],[man(fun(5)),man(fun(6,U)),not(woman(U))]
+]

@@ -30,7 +30,8 @@ experiments = {
         "if annie collapses then sally does not smoke",
         "if annie collapses then sally plays air guitar",
         "Annie belief that Sally plays air guitar",
-        "Sally belief that Sally smokes"
+        "Sally belief that Sally smokes",
+        "Annie belief that Sally smokes"
     ]
 }
 

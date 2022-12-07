@@ -4,10 +4,13 @@ from typing import List, Union
 from AGM.clause import Clause
 import sys
 
-sys.setrecursionlimit(10000)
+max_rec = 10000
+sys.setrecursionlimit(max_rec * 2)
 
 
-def DPLL(kb: List):
+def DPLL(kb: List, iteration=0):
+    if iteration > max_rec:
+        return False
     try:
         unit_clauses = get_unit_clauses(kb)
         while unit_clauses:
@@ -32,13 +35,14 @@ def DPLL(kb: List):
 
         term = shortest_clause.split(' |')[0]
 
-        if DPLL([term] + kb):
+        if DPLL([term] + kb, iteration=iteration + 1):
             return True
         else:
             neg_term = str(to_cnf(f"~({term})"))
-            return DPLL([neg_term] + kb)
+            return DPLL([neg_term] + kb, iteration=iteration + 1)
     except:
-        # hit recursion limit. Assume there is no solution then.A
+        # hit recursion limit. Assume there is no solution then.
+        print('recursion exception')
         return False
 
 
@@ -90,21 +94,16 @@ def get_units_from_clauses(kb: List[Clause]):
 
 
 def sentence_to_clauses(sentence: str) -> List[str]:
-    try:
-        cnf = to_cnf(sentence)
-        clauses = str(cnf).split('&')
-
-    except SyntaxError:
-        raise Exception('Formula provided has wrong format.')
-
-    for i, clause in enumerate(clauses):
-        clauses[i] = clause.replace('(', '').replace(')', '').strip()
-    # TODO: Replace with map function
+    small_sentences = split_sentence_by_first_OR(sentence)
+    clauses = []
+    for unit_sentence in small_sentences:
+        cnf = to_cnf(unit_sentence)
+        clauses.append(str(cnf))
     return clauses
 
 
 def split_sentence_by_first_OR(sentence: str) -> List[str]:
-    #sentence = sentence[1:-1]
+    # sentence = sentence[1:-1]
     parenthesis = 0
     splitters = []
     sentences = []
@@ -124,4 +123,3 @@ def split_sentence_by_first_OR(sentence: str) -> List[str]:
         sentences.append(sentence[start_split:split])
         start_split = split + 1
     return sentences
-

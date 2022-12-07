@@ -19,13 +19,14 @@ def sentence_to_array(s: str):
     format_s = str(format_s).replace("'", "").replace(' ', '')
     return format_s
 
+
 def pick_experiment():
     print('Input experiment to run (1 to {}):'.format(str(len(experiments))))
     for idx, e in enumerate(experiments):
-        print('{}.  {}.'.format(str(idx+1), e))
+        print('{}.  {}.'.format(str(idx + 1), e))
     i = int(input())
     option = experiments.keys()
-    option = list(option)[i-1]
+    option = list(option)[i - 1]
     return experiments[option]
 
 
@@ -59,15 +60,17 @@ if __name__ == '__main__':
             is_real = DEL_question_world(cnf)
             if agent_beliefs:
                 print('{}: beliefs in - {}'.format(b_agent, sentence))
+                if not is_real:
+                    print('{}: has a false believe in - {}'.format(b_agent, sentence))
             else:
                 print('{}: do not believe in - {}'.format(b_agent, sentence))
-            if not is_real:
-                print('{}: has a false believe in - {}'.format(b_agent, sentence))
-
+        elif len(agents) == 0:
+            cnf = engine.parse_to_cnf(array_sentence)
+            agent_knowledge = DEL_action_broadcast(cnf)
+            print("{} -> {}".format(agents[0], sentence))
         else:
             # big assumption. First PN is the agent who does the action.
             cnf = engine.parse_to_cnf(array_sentence)
             agent_knowledge = DEL_action(agents[0], cnf)
             print("{} -> {}".format(agents[0], sentence))
-
 

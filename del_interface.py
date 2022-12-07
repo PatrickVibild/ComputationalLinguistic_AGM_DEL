@@ -15,6 +15,27 @@ def DEL_remove_sees(pair):
     DEL.remove_vision([pair])
 
 
+def DEL_action_broadcast(formula):
+    DEL.update(None, formula, is_broadcast=True)
+    DEL.crunch_worlds()
+    agent_knowledge = DEL.knowledge(DEL.world_nr + 1)
+    output = {}
+    for knowledge in agent_knowledge:
+        output[knowledge.agent] = knowledge.stringify()
+    strinfy_predicate = ''
+    for i, ors in enumerate(DEL.current_world.assignment):
+        strinfy_predicate += '('
+        for j, predicate in enumerate(ors):
+            strinfy_predicate += str(predicate)
+            if j + 1 < len(ors):
+                strinfy_predicate += ' OR '
+        strinfy_predicate += ')'
+        if i + 1 < len(DEL.current_world.assignment):
+            strinfy_predicate += ' AND '
+    output["world"] = strinfy_predicate
+    return output
+
+
 def DEL_action(agent, formula):
     DEL.update(agent, formula)
 
@@ -35,6 +56,13 @@ def DEL_action(agent, formula):
             strinfy_predicate += ' AND '
     output["world"] = strinfy_predicate
     return output
+
+
+def DEL_print_internal():
+    relations = 0
+    for agent in DEL.relations:
+        relations += len(DEL.relations[agent])
+    print('Dynamic Epistemic Logic contains {} worlds and {} relations.'.format(str(len(DEL.worlds)), str(relations)))
 
 
 def DEL_question_agent(agent, question):
@@ -78,7 +106,7 @@ def DEL_question_agent(agent, question):
                     if j + 1 < len(clause):
                         clause_str += ' | '
                 clause_str += ')'
-                if i+1 < len(question):
+                if i + 1 < len(question):
                     clause_str += ' & '
 
             answer = belief_engine.check_entailment(clause_str)
@@ -126,7 +154,7 @@ def DEL_question_world(question):
             if j + 1 < len(clause):
                 clause_str += ' | '
         clause_str += ')'
-        if i+1 < len(question):
+        if i + 1 < len(question):
             clause_str += ' & '
 
     answer = belief_engine.check_entailment(clause_str)

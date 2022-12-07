@@ -1,3 +1,5 @@
+import copy
+
 from AGM.BeliefBase import BeliefBase
 from epistemic_logic.predicates.predicate import *
 
@@ -12,6 +14,8 @@ class World:
         self.name = name
         self.assignment = assignment
         self.copy_of = None
+        self.child_name = None
+
 
     def __eq__(self, other):
         return self.name == other.name and self.assignment == other.assignment
@@ -43,8 +47,8 @@ class World:
                 if j+1 < len(clause):
                     clause_str += ' | '
             belief.expansion(clause_str)
-        # contract and expansion of new predicates.
 
+        # contract and expansion of new predicates.
         for i, clause in enumerate(predicates):
             clause_str = ''
             for j, predicate in enumerate(clause):
@@ -73,12 +77,9 @@ class World:
             assignments.append(clauses)
         self.assignment = assignments
 
-        # # mapping from AGM format to previous sentences.
-        # for predicate in predicates:
-        #     if isinstance(predicate, NoPredicate):
-        #         negated = predicate.negate()
-        #         if negated in self.assignment:
-        #             self.assignment.remove(negated)
-        #     else:
-        #         if not (predicate in self.assignment):
-        #             self.assignment.append(predicate)
+    def create_child(self, name, predicates):
+        child = copy.deepcopy(self)
+        child.rename(name)
+        self.child_name = child.name
+        child.update_world(predicates)
+        return child
